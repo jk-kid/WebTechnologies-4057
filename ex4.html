@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote for India's Legendary Cars</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://www.wallpaperflare.com/static/588/420/456/vintage-india-car-classic-wallpaper.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            animation: fadeIn 2s;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+        .poll-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        button {
+            background: #ff6600;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #cc5500;
+        }
+        .live-results {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        .gauge-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .gauge {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .gauge-fill {
+            height: 20px;
+            background: #ff6600;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .car-image {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Vote for India's Legendary Cars</h1>
+        <form class="poll-form" id="carPoll">
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="car">Choose Your Favorite Iconic Car:</label>
+                <select id="car" name="car" required>
+                    <option value="" disabled selected>Choose a car</option>
+                    <option value="Hindustan Ambassador">Hindustan Ambassador</option>
+                    <option value="Premier Padmini">Premier Padmini</option>
+                    <option value="Contessa Classic">Contessa Classic</option>
+                    <option value="Maruti 800">Maruti 800</option>
+                    <option value="Standard 2000">Standard 2000</option>
+                    <option value="Tata Sierra">Tata Sierra</option>
+                    <option value="Mahindra Jeep">Mahindra Jeep</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="submitVote()">Submit Vote</button>
+            </div>
+        </form>
+        <div class="live-results" id="liveResults" style="display:none;">
+            <h2>Live Poll Results</h2>
+            <img src="Gemini_Generated_Image_sb3771sb3771sb37.jpeg" alt="Legendary Cars" class="car-image">
+            <div id="resultGauge"></div>
+        </div>
+    </div>
+
+    <script>
+        const votes = {
+            "Hindustan Ambassador": 50,
+            "Premier Padmini": 40,
+            "Contessa Classic": 35,
+            "Maruti 800": 60,
+            "Standard 2000": 20,
+            "Tata Sierra": 45,
+            "Mahindra Jeep": 30
+        };
+
+        function submitVote() {
+            const name = document.getElementById("name").value;
+            const car = document.getElementById("car").value;
+
+            if (!name || !car) {
+                alert("Please complete the form before submitting.");
+                return;
+            }
+
+            // Increment votes
+            votes[car]++;
+            renderResults();
+        }
+
+        function renderResults() {
+            const resultDiv = document.getElementById("liveResults");
+            const gaugeContainer = document.getElementById("resultGauge");
+
+            gaugeContainer.innerHTML = ""; // Clear previous results
+            let totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
+
+            for (let car in votes) {
+                const percentage = ((votes[car] / totalVotes) * 100).toFixed(1);
+
+                // Create gauge element
+                const gaugeWrap = document.createElement("div");
+                gaugeWrap.classList.add("gauge-container");
+
+                const label = document.createElement("span");
+                label.textContent = `${car} (${votes[car]} votes)`;
+
+                const gauge = document.createElement("div");
+                gauge.classList.add("gauge");
+
+                const gaugeFill = document.createElement("div");
+                gaugeFill.classList.add("gauge-fill");
+                gaugeFill.style.width = `${percentage}%`;
+
+                gauge.appendChild(gaugeFill);
+                gaugeWrap.appendChild(label);
+                gaugeWrap.appendChild(gauge);
+
+                gaugeContainer.appendChild(gaugeWrap);
+            }
+
+            resultDiv.style.display = "block";
+        }
+    </script>
+</body>
+</html>
